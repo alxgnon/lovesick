@@ -34,6 +34,9 @@ function love.update(dt)
   timer.update(dt)
 
   player.x, player.y = sticks.move(player.x, player.y, dt, PLAYER_SPEED)
+  player.x = math.min(math.max(player.x, 0), 800)
+  player.y = math.min(math.max(player.y, 0), 800)
+
   local shootAngle = sticks.shoot()
 
   if shootAngle and timer.check("shoot", BULLET_RATE + score / 100) then

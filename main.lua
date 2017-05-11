@@ -10,19 +10,20 @@ BULLET_RATE = 0.1
 ENEMY_SIZE = 10
 ENEMY_SPEED = 3
 ENEMY_RATE = 0.5
-ENEMY_SPAWNS = {-25, 825}
 
 function reset()
   timer.reset("shoot")
   timer.reset("spawnEnemy")
 
   score = 2
-  player = {x = 400, y = 400}
+  player = {x = WIDTH / 2, y = HEIGHT / 2}
   bullets = {}
   enemies = {}
 end
 
 function love.load()
+  WIDTH, HEIGHT = love.graphics.getDimensions()
+  ENEMY_SPAWNS = {-25, WIDTH + 25}
   reset()
 end
 
@@ -34,8 +35,8 @@ function love.update(dt)
   timer.update(dt)
 
   player.x, player.y = sticks.move(player.x, player.y, dt, PLAYER_SPEED)
-  player.x = math.min(math.max(player.x, 0), 800)
-  player.y = math.min(math.max(player.y, 0), 800)
+  player.x = math.min(math.max(player.x, 0), WIDTH)
+  player.y = math.min(math.max(player.y, 0), HEIGHT)
 
   local shootAngle = sticks.shoot()
 
@@ -51,13 +52,13 @@ function love.update(dt)
 
   if timer.check("spawnEnemy", ENEMY_RATE - score / 100) then
     local x = ENEMY_SPAWNS[love.math.random(2)]
-    local y = love.math.random(1400) - 300
+    local y = love.math.random(HEIGHT * 1.5) - HEIGHT * 0.25
     table.insert(enemies, {x = x, y = y})
   end
 
   for i, b in ipairs(bullets) do
     b.x, b.y = b.x + (b.dx * dt), b.y + (b.dy * dt)
-    if b.x > 900 or b.x < -100 or b.y > 900 or b.y < -100 then
+    if b.x > WIDTH + 100 or b.x < -100 or b.y > HEIGHT + 100 or b.y < -100 then
       table.remove(bullets, i)
     end
   end

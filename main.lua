@@ -8,8 +8,9 @@ BULLET_SPEED = 400
 BULLET_RATE = 0.1
 
 ENEMY_SIZE = 10
-ENEMY_SPEED = 4
-ENEMY_RATE = 0.2
+ENEMY_SPEED = 3
+ENEMY_RATE = 0.5
+ENEMY_SPAWNS = {-25, 825}
 
 function reset()
   timer.reset("shoot")
@@ -35,7 +36,7 @@ function love.update(dt)
   player.x, player.y = sticks.move(player.x, player.y, dt, PLAYER_SPEED)
   local shootAngle = sticks.shoot()
 
-  if shootAngle and timer.check("shoot", BULLET_RATE) then
+  if shootAngle and timer.check("shoot", BULLET_RATE + score / 100) then
     table.insert(bullets, {
       x = player.x,
       y = player.y,
@@ -45,11 +46,10 @@ function love.update(dt)
     })
   end
 
-  if timer.check("spawnEnemy", ENEMY_RATE) then
-    local x, y = love.math.random(800), love.math.random(800)
-    if math.absdist(player.x, player.y, x, y) > 300 then
-      table.insert(enemies, {x = x, y = y})
-    end
+  if timer.check("spawnEnemy", ENEMY_RATE - score / 100) then
+    local x = ENEMY_SPAWNS[love.math.random(2)]
+    local y = love.math.random(1400) - 300
+    table.insert(enemies, {x = x, y = y})
   end
 
   for i, b in ipairs(bullets) do
@@ -58,8 +58,8 @@ function love.update(dt)
 
   for i, e in ipairs(enemies) do
     local angle = math.atan2(e.y - player.y, e.x - player.x)
-    e.x = e.x - math.cos(angle) * ENEMY_SPEED
-    e.y = e.y - math.sin(angle) * ENEMY_SPEED
+    e.x = e.x - math.cos(angle) * (ENEMY_SPEED + score / 10)
+    e.y = e.y - math.sin(angle) * (ENEMY_SPEED + score / 10)
 
     if math.absdist(player.x, player.y, e.x, e.y) <= score + ENEMY_SIZE then
       table.remove(enemies, i)
@@ -69,7 +69,6 @@ function love.update(dt)
     for j, b in ipairs(bullets) do
       if math.absdist(e.x, e.y, b.x, b.y) <= b.size + ENEMY_SIZE then
         table.remove(enemies, i)
-        table.remove(bullets, j)
         score = score + 0.1
       end
     end

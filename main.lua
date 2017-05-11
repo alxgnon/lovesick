@@ -54,6 +54,9 @@ function love.update(dt)
 
   for i, b in ipairs(bullets) do
     b.x, b.y = b.x + (b.dx * dt), b.y + (b.dy * dt)
+    if b.x > 900 or b.x < -100 or b.y > 900 or b.y < -100 then
+      table.remove(bullets, i)
+    end
   end
 
   for i, e in ipairs(enemies) do

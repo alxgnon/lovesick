@@ -85,13 +85,13 @@ function love.draw()
   love.graphics.setColor(255, 255, 255)
   for i, b in ipairs(bullets) do
     love.graphics.circle("fill", b.x, b.y, b.size)
-	end
+  end
 
   love.graphics.setColor(0, 255, 0)
   love.graphics.circle("fill", player.x, player.y, score)
 
   love.graphics.setColor(255, 0, 0)
-	for i, e in ipairs(enemies) do
+  for i, e in ipairs(enemies) do
     love.graphics.circle("fill", e.x, e.y, ENEMY_SIZE)
-	end
+  end
 end

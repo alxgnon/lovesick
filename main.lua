@@ -61,17 +61,17 @@ function love.update(dt)
     e.x = e.x - math.cos(angle) * ENEMY_SPEED
     e.y = e.y - math.sin(angle) * ENEMY_SPEED
 
+    if math.absdist(player.x, player.y, e.x, e.y) <= score + ENEMY_SIZE then
+      table.remove(enemies, i)
+      score = 2
+    end
+
     for j, b in ipairs(bullets) do
       if math.absdist(e.x, e.y, b.x, b.y) <= b.size + ENEMY_SIZE then
         table.remove(enemies, i)
         table.remove(bullets, j)
         score = score + 0.1
       end
-    end
-
-    if math.absdist(player.x, player.y, e.x, e.y) <= score + ENEMY_SIZE then
-      table.remove(enemies, i)
-      score = 2
     end
   end
 end

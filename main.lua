@@ -87,7 +87,7 @@ function love.draw()
     love.graphics.circle("fill", b.x, b.y, b.size)
 	end
 
-  love.graphics.setColor(0, 255, 255)
+  love.graphics.setColor(0, 255, 0)
   love.graphics.circle("fill", player.x, player.y, score)
 
   love.graphics.setColor(255, 0, 0)

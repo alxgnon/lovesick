@@ -15,7 +15,8 @@ function reset()
   timer.reset("shoot")
   timer.reset("spawnEnemy")
 
-  player = {x = 400, y = 400, size = 2}
+  score = 2
+  player = {x = 400, y = 400}
   bullets = {}
   enemies = {}
 end
@@ -39,7 +40,8 @@ function love.update(dt)
       x = player.x,
       y = player.y,
       dx = math.cos(shootAngle) * BULLET_SPEED,
-      dy = math.sin(shootAngle) * BULLET_SPEED
+      dy = math.sin(shootAngle) * BULLET_SPEED,
+      size = score
     })
   end
 
@@ -60,16 +62,16 @@ function love.update(dt)
     e.y = e.y - math.sin(angle) * ENEMY_SPEED
 
     for j, b in ipairs(bullets) do
-      if math.absdist(e.x, e.y, b.x, b.y) <= player.size + ENEMY_SIZE then
+      if math.absdist(e.x, e.y, b.x, b.y) <= b.size + ENEMY_SIZE then
         table.remove(enemies, i)
         table.remove(bullets, j)
-        player.size = player.size + 0.1
+        score = score + 0.1
       end
     end
 
-    if math.absdist(player.x, player.y, e.x, e.y) <= player.size + ENEMY_SIZE then
+    if math.absdist(player.x, player.y, e.x, e.y) <= score + ENEMY_SIZE then
       table.remove(enemies, i)
-      player.size = 2
+      score = 2
     end
   end
 end
@@ -77,11 +79,11 @@ end
 function love.draw()
   love.graphics.setColor(255, 255, 255)
   for i, b in ipairs(bullets) do
-    love.graphics.circle("fill", b.x, b.y, player.size)
+    love.graphics.circle("fill", b.x, b.y, b.size)
 	end
 
   love.graphics.setColor(0, 255, 255)
-  love.graphics.circle("fill", player.x, player.y, player.size)
+  love.graphics.circle("fill", player.x, player.y, score)
 
   love.graphics.setColor(255, 0, 0)
 	for i, e in ipairs(enemies) do

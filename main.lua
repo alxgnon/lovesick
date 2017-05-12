@@ -67,9 +67,9 @@ function love.update(dt)
   end
 
   for i, e in ipairs(enemies) do
-    local angle = math.atan2(e.y - player.y, e.x - player.x)
-    e.x = e.x - math.cos(angle) * (ENEMY_SPEED + score / 10)
-    e.y = e.y - math.sin(angle) * (ENEMY_SPEED + score / 10)
+    e.angle = math.atan2(e.y - player.y, e.x - player.x)
+    e.x = e.x - math.cos(e.angle) * (ENEMY_SPEED + score / 10)
+    e.y = e.y - math.sin(e.angle) * (ENEMY_SPEED + score / 10)
 
     if math.absdist(player.x, player.y, e.x, e.y) <= score + ENEMY_SIZE then
       table.remove(enemies, i)
@@ -101,8 +101,8 @@ function love.draw()
   love.graphics.setColor(0, 255, 0)
   love.graphics.circle("fill", player.x, player.y, score)
 
-  love.graphics.setColor(255, 0, 0)
+  love.graphics.setColor(255, 130, 0)
   for i, e in ipairs(enemies) do
-    love.graphics.circle("fill", e.x, e.y, ENEMY_SIZE)
+    love.graphics.polygon("fill", math.regular(e.x, e.y, e.angle, 3, ENEMY_SIZE))
   end
 end

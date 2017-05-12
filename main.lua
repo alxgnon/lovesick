@@ -144,18 +144,18 @@ function love.update(dt)
         playing = false
         dead = true
         selectScore = false
-      else
-        for j, b in ipairs(bullets) do
-          if math.absdist(e.x, e.y, b.x, b.y) <= b.size + PAWN_SIZE then
-            hitSfx:play()
-            table.remove(pawns, i)
+      end
 
-            if b.power > 0.25 then
-              b.power = b.power - 0.5
-              b.size = 4 + b.power * 10
-            else
-              table.remove(bullets, j)
-            end
+      for j, b in ipairs(bullets) do
+        if math.absdist(e.x, e.y, b.x, b.y) <= b.size + PAWN_SIZE then
+          hitSfx:play()
+          table.remove(pawns, i)
+
+          if b.power > 0.25 then
+            b.power = b.power - 0.5
+            b.size = 4 + b.power * 10
+          else
+            table.remove(bullets, j)
           end
         end
       end

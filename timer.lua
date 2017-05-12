@@ -1,9 +1,11 @@
 timer = {}
 
 local timers = {}
+local lastValue = {}
 
 function timer.reset(name)
   timers[name] = 0
+  lastValue[name] = 0
 end
 
 function timer.update(dt)
@@ -22,4 +24,16 @@ end
 
 function timer.peek(name)
   return timers[name]
+end
+
+function timer.tick(name, secondSfx, tenSecondsSfx)
+  local value = math.floor(timers[name])
+  if value > lastValue[name] then
+    lastValue[name] = value
+    if value % 10 == 0 then
+      tenSecondsSfx:play()
+    else
+      secondSfx:play()
+    end
+  end
 end

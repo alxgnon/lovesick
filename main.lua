@@ -27,6 +27,17 @@ function reset()
 end
 
 function love.load()
+  explosionSfx = love.audio.newSource("assets/explosion.wav", "static")
+  explosionSfx:setVolume(0.2)
+  hitSfx = love.audio.newSource("assets/hit.wav", "static")
+  hitSfx:setVolume(0.1)
+  shootSfx = love.audio.newSource("assets/shoot.wav", "static")
+  shootSfx:setVolume(0.02)
+  secondSfx = love.audio.newSource("assets/second.wav", "static")
+  secondSfx:setVolume(0.075)
+  tenSecondsSfx = love.audio.newSource("assets/tenSeconds.wav", "static")
+  tenSecondsSfx:setVolume(0.09)
+
   WIDTH, HEIGHT = love.graphics.getDimensions()
   ENEMY_SPAWNS = {-25, WIDTH + 25}
   reset()
@@ -49,6 +60,7 @@ function love.update(dt)
   if sticks.shoot() then
     local aim = sticks.aim()
     if timer.check("shoot", BULLET_RATE) then
+      shootSfx:play()
       table.insert(bullets, {
         x = player.x,
         y = player.y,
@@ -79,18 +91,25 @@ function love.update(dt)
 
     if math.absdist(player.x, player.y, e.x, e.y) <= PLAYER_CORE + ENEMY_SIZE then
       table.remove(enemies, i)
-      timer.reset("score")
+      if timer.peek("score") > 1 then
+        explosionSfx:play()
+        timer.reset("score")
+      end
     end
 
     for j, b in ipairs(bullets) do
       if math.absdist(e.x, e.y, b.x, b.y) <= b.size + ENEMY_SIZE then
+        hitSfx:play()
         table.remove(enemies, i)
+        table.remove(bullets, j)
       end
     end
   end
 end
 
 function love.draw()
+  timer.tick("score", secondSfx, tenSecondsSfx)
+
   lcd.draw{
     number = timer.peek("score"),
     x = WIDTH / 14, y = HEIGHT / 14,

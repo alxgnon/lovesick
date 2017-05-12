@@ -16,8 +16,8 @@ function reset()
   timer.reset("shoot")
   timer.reset("spawnEnemy")
 
-  score = 2
-  player = {x = WIDTH / 2, y = HEIGHT / 2}
+  score = 10
+  player = {x = WIDTH / 2, y = HEIGHT / 2, r = 0}
   bullets = {}
   enemies = {}
 end
@@ -41,22 +41,23 @@ function love.update(dt)
   player.x = math.min(math.max(player.x, 0), WIDTH)
   player.y = math.min(math.max(player.y, 0), HEIGHT)
 
-  local shootAngle = sticks.shoot()
-
-  if shootAngle and timer.check("shoot", BULLET_RATE + score / 100) then
-    table.insert(bullets, {
-      x = player.x,
-      y = player.y,
-      dx = math.cos(shootAngle) * BULLET_SPEED,
-      dy = math.sin(shootAngle) * BULLET_SPEED,
-      size = score
-    })
+  if sticks.shoot() then
+    player.r = sticks.aim()
+    if timer.check("shoot", BULLET_RATE + score / 100) then
+      table.insert(bullets, {
+        x = player.x,
+        y = player.y,
+        dx = math.cos(player.r) * BULLET_SPEED,
+        dy = math.sin(player.r) * BULLET_SPEED,
+        size = score
+      })
+    end
   end
 
   if timer.check("spawnEnemy", ENEMY_RATE - score / 100) then
     local x = ENEMY_SPAWNS[love.math.random(2)]
     local y = love.math.random(HEIGHT * 1.5) - HEIGHT * 0.25
-    table.insert(enemies, {x = x, y = y})
+    table.insert(enemies, {x = x, y = y, r = 0})
   end
 
   for i, b in ipairs(bullets) do
@@ -67,13 +68,13 @@ function love.update(dt)
   end
 
   for i, e in ipairs(enemies) do
-    e.angle = math.atan2(e.y - player.y, e.x - player.x)
-    e.x = e.x - math.cos(e.angle) * (ENEMY_SPEED + score / 10)
-    e.y = e.y - math.sin(e.angle) * (ENEMY_SPEED + score / 10)
+    e.r = math.atan2(e.y - player.y, e.x - player.x)
+    e.x = e.x - math.cos(e.r) * (ENEMY_SPEED + score / 10)
+    e.y = e.y - math.sin(e.r) * (ENEMY_SPEED + score / 10)
 
     if math.absdist(player.x, player.y, e.x, e.y) <= score + ENEMY_SIZE then
       table.remove(enemies, i)
-      score = 2
+      score = 10
     end
 
     for j, b in ipairs(bullets) do
@@ -99,10 +100,10 @@ function love.draw()
   end
 
   love.graphics.setColor(0, 255, 0)
-  love.graphics.circle("fill", player.x, player.y, score)
+  love.graphics.polygon("fill", math.regular(player.x, player.y, player.r, 3, score))
 
   love.graphics.setColor(255, 130, 0)
   for i, e in ipairs(enemies) do
-    love.graphics.polygon("fill", math.regular(e.x, e.y, e.angle, 3, ENEMY_SIZE))
+    love.graphics.polygon("fill", math.regular(e.x, e.y, e.r + math.pi/3, 3, ENEMY_SIZE))
   end
 end

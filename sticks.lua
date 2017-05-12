@@ -18,9 +18,12 @@ function sticks.move(x, y, dt, speed)
   return x + sx * dt * speed, y + sy * dt * speed
 end
 
+function sticks.aim()
+  sx, sy = axes[SHOOT_X], axes[SHOOT_Y]
+  return math.atan2(sy, sx)
+end
+
 function sticks.shoot()
   sx, sy = axes[SHOOT_X], axes[SHOOT_Y]
-  if math.absdist(0, 0, sx, sy) > 0.2 then
-    return math.atan2(sy, sx)
-  end
+  return math.absdist(0, 0, sx, sy) > 0.2
 end

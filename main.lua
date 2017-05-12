@@ -62,7 +62,7 @@ function love.joystickaxis(joystick, axis, value)
 end
 
 function love.joystickpressed(joystick, button)
-  if not playing then
+  if dead then
     if (button == 9 or button == 10) and not selectScore then
       reset()
       timer.reset("score")
@@ -73,6 +73,11 @@ function love.joystickpressed(joystick, button)
       selectScore = true
     elseif button == 10 then
       playing = true
+      dead = false
+    end
+  else
+    if button == 10 then
+      playing = not playing
     end
   end
 end
@@ -122,14 +127,15 @@ function love.update(dt)
       if math.absdist(player.x, player.y, e.x, e.y) <= PLAYER_CORE + ENEMY_SIZE then
         explosionSfx:play()
         playing = false
+        dead = true
         selectScore = false
-      end
-
-      for j, b in ipairs(bullets) do
-        if math.absdist(e.x, e.y, b.x, b.y) <= b.size + ENEMY_SIZE then
-          hitSfx:play()
-          table.remove(enemies, i)
-          table.remove(bullets, j)
+      else
+        for j, b in ipairs(bullets) do
+          if math.absdist(e.x, e.y, b.x, b.y) <= b.size + ENEMY_SIZE then
+            hitSfx:play()
+            table.remove(enemies, i)
+            table.remove(bullets, j)
+          end
         end
       end
     end

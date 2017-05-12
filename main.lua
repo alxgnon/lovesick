@@ -21,18 +21,18 @@ PLAYER_RANKS = {
 BULLET_SPEED = 400
 BULLET_RATE = 0.1
 
-ENEMY_SIZE = 10
-ENEMY_RATE = 0.4
+PAWN_SIZE = 10
+PAWN_RATE = 0.4
 
 function reset()
   difficulty.reset()
 
   timer.reset("shoot")
-  timer.reset("spawnEnemy")
+  timer.reset("spawnPawn")
 
   player = {x = WIDTH / 2, y = HEIGHT / 2, r = 0}
   bullets = {}
-  enemies = {}
+  pawns = {}
 end
 
 function love.load()
@@ -112,10 +112,10 @@ function love.update(dt)
       end
     end
 
-    if timer.check("spawnEnemy", ENEMY_RATE) then
+    if timer.check("spawnPawn", PAWN_RATE) then
       local x = ENEMY_SPAWNS[love.math.random(2)]
       local y = love.math.random(HEIGHT * 1.2) - HEIGHT * 0.1
-      table.insert(enemies, {x = x, y = y, r = 0})
+      table.insert(pawns, {x = x, y = y, r = 0})
     end
 
     for i, b in ipairs(bullets) do
@@ -125,21 +125,21 @@ function love.update(dt)
       end
     end
 
-    for i, e in ipairs(enemies) do
+    for i, e in ipairs(pawns) do
       e.r = math.atan2(e.y - player.y, e.x - player.x)
       e.x = e.x - math.cos(e.r) * difficulty.pawnSpeed
       e.y = e.y - math.sin(e.r) * difficulty.pawnSpeed
 
-      if math.absdist(player.x, player.y, e.x, e.y) <= PLAYER_CORE + ENEMY_SIZE then
+      if math.absdist(player.x, player.y, e.x, e.y) <= PLAYER_CORE + PAWN_SIZE then
         explosionSfx:play()
         playing = false
         dead = true
         selectScore = false
       else
         for j, b in ipairs(bullets) do
-          if math.absdist(e.x, e.y, b.x, b.y) <= b.size + ENEMY_SIZE then
+          if math.absdist(e.x, e.y, b.x, b.y) <= b.size + PAWN_SIZE then
             hitSfx:play()
-            table.remove(enemies, i)
+            table.remove(pawns, i)
             table.remove(bullets, j)
           end
         end
@@ -174,10 +174,10 @@ function love.draw()
   love.graphics.setColor(255, 255, 255)
   love.graphics.polygon("fill", math.regular(player.x, player.y, player.r, 4, PLAYER_CORE))
 
-  for i, e in ipairs(enemies) do
+  for i, e in ipairs(pawns) do
     love.graphics.setColor(0, 0, 0)
-    love.graphics.polygon("fill", math.regular(e.x, e.y, e.r + math.pi/3, 3, ENEMY_SIZE + STROKE))
+    love.graphics.polygon("fill", math.regular(e.x, e.y, e.r + math.pi/3, 3, PAWN_SIZE + STROKE))
     love.graphics.setColor(255, 130, 0)
-    love.graphics.polygon("fill", math.regular(e.x, e.y, e.r + math.pi/3, 3, ENEMY_SIZE))
+    love.graphics.polygon("fill", math.regular(e.x, e.y, e.r + math.pi/3, 3, PAWN_SIZE))
   end
 end

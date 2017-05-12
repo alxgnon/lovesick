@@ -51,7 +51,7 @@ local function drawDigit(digit, x, y, w, h, bgColor, fgColor)
 end
 
 local function drawPair(number, x, y, w, h, bgColor, fgColor)
-  number = number % 100
+  number = number % 60
   local u, v = w / 20, w / 2
   drawDigit(math.floor(number / 10), x, y, v - u, h, bgColor, fgColor)
   drawDigit(math.floor(number % 10), x + v + u, y, v - u, h, bgColor, fgColor)

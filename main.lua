@@ -42,10 +42,10 @@ function love.load()
   shootSfx = love.audio.newSource("assets/shoot.wav", "static")
   secondSfx = love.audio.newSource("assets/second.wav", "static")
   secondSfx:setVolume(0.05)
-  tenSecondsSfx = love.audio.newSource("assets/tenSeconds.wav", "static")
-  tenSecondsSfx:setVolume(0.06)
-  hundredSecondsSfx = love.audio.newSource("assets/hundredSeconds.wav", "static")
-  hundredSecondsSfx:setVolume(0.1)
+  tenSecondSfx = love.audio.newSource("assets/tenSecond.wav", "static")
+  tenSecondSfx:setVolume(0.06)
+  minuteSfx = love.audio.newSource("assets/minute.wav", "static")
+  minuteSfx:setVolume(0.1)
 
   WIDTH, HEIGHT = love.graphics.getDimensions()
   ENEMY_SPAWNS = {-25, WIDTH + 25}
@@ -60,7 +60,11 @@ function love.joystickaxis(joystick, axis, value)
 end
 
 function love.joystickpressed(joystick, button)
-  if dead then
+  if alive then
+    if button == 10 then
+      playing = not playing
+    end
+  else
     if (button == 9 or button == 10) and not selectScore then
       reset()
       timer.reset("score")
@@ -71,11 +75,7 @@ function love.joystickpressed(joystick, button)
       selectScore = true
     elseif button == 10 then
       playing = true
-      dead = false
-    end
-  else
-    if button == 10 then
-      playing = not playing
+      alive = true
     end
   end
 end
@@ -142,7 +142,7 @@ function love.update(dt)
       if math.absdist(player.x, player.y, e.x, e.y) <= PLAYER_CORE + PAWN_SIZE then
         explosionSfx:play()
         playing = false
-        dead = true
+        alive = false
         selectScore = false
       end
 
@@ -164,7 +164,7 @@ function love.update(dt)
 end
 
 function love.draw()
-  timer.tick("score", secondSfx, tenSecondsSfx, hundredSecondsSfx)
+  timer.tick("score", secondSfx, tenSecondSfx, minuteSfx)
 
   lcd.draw{
     number = timer.peek("score"),
@@ -178,7 +178,7 @@ function love.draw()
     love.graphics.circle("fill", b.x, b.y, b.size)
   end
 
-  local rank = math.floor(timer.peek("score") / 100 % table.getn(PLAYER_RANKS)) + 1
+  local rank = math.min(math.floor(timer.peek("score") / 60 + 1), table.getn(PLAYER_RANKS))
 
   love.graphics.setColor(0, 0, 0)
   love.graphics.polygon("fill", math.regular(player.x, player.y, player.r, 4, PLAYER_SIZE + STROKE))

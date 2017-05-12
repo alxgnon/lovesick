@@ -13,6 +13,11 @@ function sticks.update(joystick, axis, value)
   axes[axis] = value
 end
 
+function sticks.point()
+  sx, sy = axes[MOVE_X], axes[MOVE_Y]
+  return math.atan2(sy, sx)
+end
+
 function sticks.move(x, y, dt, speed)
   sx, sy = axes[MOVE_X], axes[MOVE_Y]
   return x + sx * dt * speed, y + sy * dt * speed

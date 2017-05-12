@@ -3,6 +3,10 @@ require "moremath"
 require "sticks"
 require "timer"
 
+STROKE = 3
+
+PLAYER_SIZE = 15
+PLAYER_CORE = 4
 PLAYER_SPEED = 250
 
 BULLET_SPEED = 400
@@ -10,13 +14,13 @@ BULLET_RATE = 0.1
 
 ENEMY_SIZE = 10
 ENEMY_SPEED = 3
-ENEMY_RATE = 0.5
+ENEMY_RATE = 0.4
 
 function reset()
   timer.reset("shoot")
   timer.reset("spawnEnemy")
 
-  score = 10
+  score = 0
   player = {x = WIDTH / 2, y = HEIGHT / 2, r = 0}
   bullets = {}
   enemies = {}
@@ -27,7 +31,7 @@ function love.load()
   ENEMY_SPAWNS = {-25, WIDTH + 25}
   reset()
 
-  love.graphics.setBackgroundColor({0, 8, 8})
+  love.graphics.setBackgroundColor(0, 8, 8)
 end
 
 function love.joystickaxis(joystick, axis, value)
@@ -40,21 +44,22 @@ function love.update(dt)
   player.x, player.y = sticks.move(player.x, player.y, dt, PLAYER_SPEED)
   player.x = math.min(math.max(player.x, 0), WIDTH)
   player.y = math.min(math.max(player.y, 0), HEIGHT)
+  player.r = sticks.point()
 
   if sticks.shoot() then
-    player.r = sticks.aim()
-    if timer.check("shoot", BULLET_RATE + score / 100) then
+    local aim = sticks.aim()
+    if timer.check("shoot", BULLET_RATE) then
       table.insert(bullets, {
         x = player.x,
         y = player.y,
-        dx = math.cos(player.r) * BULLET_SPEED,
-        dy = math.sin(player.r) * BULLET_SPEED,
-        size = score
+        dx = math.cos(aim) * BULLET_SPEED,
+        dy = math.sin(aim) * BULLET_SPEED,
+        size = 5
       })
     end
   end
 
-  if timer.check("spawnEnemy", ENEMY_RATE - score / 100) then
+  if timer.check("spawnEnemy", ENEMY_RATE) then
     local x = ENEMY_SPAWNS[love.math.random(2)]
     local y = love.math.random(HEIGHT * 1.5) - HEIGHT * 0.25
     table.insert(enemies, {x = x, y = y, r = 0})
@@ -69,18 +74,18 @@ function love.update(dt)
 
   for i, e in ipairs(enemies) do
     e.r = math.atan2(e.y - player.y, e.x - player.x)
-    e.x = e.x - math.cos(e.r) * (ENEMY_SPEED + score / 10)
-    e.y = e.y - math.sin(e.r) * (ENEMY_SPEED + score / 10)
+    e.x = e.x - math.cos(e.r) * ENEMY_SPEED
+    e.y = e.y - math.sin(e.r) * ENEMY_SPEED
 
-    if math.absdist(player.x, player.y, e.x, e.y) <= score + ENEMY_SIZE then
+    if math.absdist(player.x, player.y, e.x, e.y) <= PLAYER_CORE + ENEMY_SIZE then
       table.remove(enemies, i)
-      score = 10
+      score = 0
     end
 
     for j, b in ipairs(bullets) do
       if math.absdist(e.x, e.y, b.x, b.y) <= b.size + ENEMY_SIZE then
         table.remove(enemies, i)
-        score = score + 0.1
+        score = score + 1
       end
     end
   end
@@ -99,11 +104,19 @@ function love.draw()
     love.graphics.circle("fill", b.x, b.y, b.size)
   end
 
-  love.graphics.setColor(0, 255, 0)
-  love.graphics.polygon("fill", math.regular(player.x, player.y, player.r, 3, score))
+  love.graphics.setColor(0, 0, 0)
+  love.graphics.polygon("fill", math.regular(player.x, player.y, player.r, 4, PLAYER_SIZE + STROKE))
+  love.graphics.setColor(0, 170, 255)
+  love.graphics.polygon("fill", math.regular(player.x, player.y, player.r, 4, PLAYER_SIZE))
+  love.graphics.setColor(0, 0, 0)
+  love.graphics.polygon("fill", math.regular(player.x, player.y, player.r, 4, PLAYER_CORE + STROKE))
+  love.graphics.setColor(255, 255, 255)
+  love.graphics.polygon("fill", math.regular(player.x, player.y, player.r, 4, PLAYER_CORE))
 
-  love.graphics.setColor(255, 130, 0)
   for i, e in ipairs(enemies) do
+    love.graphics.setColor(0, 0, 0)
+    love.graphics.polygon("fill", math.regular(e.x, e.y, e.r + math.pi/3, 3, ENEMY_SIZE + STROKE))
+    love.graphics.setColor(255, 130, 0)
     love.graphics.polygon("fill", math.regular(e.x, e.y, e.r + math.pi/3, 3, ENEMY_SIZE))
   end
 end

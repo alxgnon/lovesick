@@ -34,9 +34,11 @@ function love.load()
   shootSfx = love.audio.newSource("assets/shoot.wav", "static")
   shootSfx:setVolume(0.02)
   secondSfx = love.audio.newSource("assets/second.wav", "static")
-  secondSfx:setVolume(0.075)
+  secondSfx:setVolume(0.05)
   tenSecondsSfx = love.audio.newSource("assets/tenSeconds.wav", "static")
-  tenSecondsSfx:setVolume(0.09)
+  tenSecondsSfx:setVolume(0.06)
+  hundredSecondsSfx = love.audio.newSource("assets/hundredSeconds.wav", "static")
+  hundredSecondsSfx:setVolume(0.1)
 
   WIDTH, HEIGHT = love.graphics.getDimensions()
   ENEMY_SPAWNS = {-25, WIDTH + 25}
@@ -108,7 +110,7 @@ function love.update(dt)
 end
 
 function love.draw()
-  timer.tick("score", secondSfx, tenSecondsSfx)
+  timer.tick("score", secondSfx, tenSecondsSfx, hundredSecondsSfx)
 
   lcd.draw{
     number = timer.peek("score"),

@@ -26,11 +26,13 @@ function timer.peek(name)
   return timers[name]
 end
 
-function timer.tick(name, secondSfx, tenSecondsSfx)
+function timer.tick(name, secondSfx, tenSecondsSfx, hundredSecondsSfx)
   local value = math.floor(timers[name])
   if value > lastValue[name] then
     lastValue[name] = value
-    if value % 10 == 0 then
+    if value % 100 == 0 then
+      hundredSecondsSfx:play()
+    elseif value % 10 == 0 then
       tenSecondsSfx:play()
     else
       secondSfx:play()

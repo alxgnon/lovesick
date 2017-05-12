@@ -51,59 +51,65 @@ function love.joystickaxis(joystick, axis, value)
   sticks.update(joystick, axis, value)
 end
 
+function love.joystickpressed(joystick, button)
+  if not playing then
+    playing = true
+    reset()
+  end
+end
+
 function love.update(dt)
-  timer.update(dt)
+  if playing then
+    timer.update(dt)
 
-  player.x, player.y = sticks.move(player.x, player.y, dt, PLAYER_SPEED)
-  player.x = math.min(math.max(player.x, 0), WIDTH)
-  player.y = math.min(math.max(player.y, 0), HEIGHT)
-  player.r = sticks.point()
+    player.x, player.y = sticks.move(player.x, player.y, dt, PLAYER_SPEED)
+    player.x = math.min(math.max(player.x, 0), WIDTH)
+    player.y = math.min(math.max(player.y, 0), HEIGHT)
+    player.r = sticks.point()
 
-  if sticks.shoot() then
-    local aim = sticks.aim()
-    if timer.check("shoot", BULLET_RATE) then
-      shootSfx:play()
-      table.insert(bullets, {
-        x = player.x,
-        y = player.y,
-        dx = math.cos(aim) * BULLET_SPEED,
-        dy = math.sin(aim) * BULLET_SPEED,
-        size = 5
-      })
-    end
-  end
-
-  if timer.check("spawnEnemy", ENEMY_RATE) then
-    local x = ENEMY_SPAWNS[love.math.random(2)]
-    local y = love.math.random(HEIGHT * 1.5) - HEIGHT * 0.25
-    table.insert(enemies, {x = x, y = y, r = 0})
-  end
-
-  for i, b in ipairs(bullets) do
-    b.x, b.y = b.x + (b.dx * dt), b.y + (b.dy * dt)
-    if b.x > WIDTH + 100 or b.x < -100 or b.y > HEIGHT + 100 or b.y < -100 then
-      table.remove(bullets, i)
-    end
-  end
-
-  for i, e in ipairs(enemies) do
-    e.r = math.atan2(e.y - player.y, e.x - player.x)
-    e.x = e.x - math.cos(e.r) * ENEMY_SPEED
-    e.y = e.y - math.sin(e.r) * ENEMY_SPEED
-
-    if math.absdist(player.x, player.y, e.x, e.y) <= PLAYER_CORE + ENEMY_SIZE then
-      table.remove(enemies, i)
-      if timer.peek("score") > 1 then
-        explosionSfx:play()
-        timer.reset("score")
+    if sticks.shoot() then
+      local aim = sticks.aim()
+      if timer.check("shoot", BULLET_RATE) then
+        shootSfx:play()
+        table.insert(bullets, {
+          x = player.x,
+          y = player.y,
+          dx = math.cos(aim) * BULLET_SPEED,
+          dy = math.sin(aim) * BULLET_SPEED,
+          size = 5
+        })
       end
     end
 
-    for j, b in ipairs(bullets) do
-      if math.absdist(e.x, e.y, b.x, b.y) <= b.size + ENEMY_SIZE then
-        hitSfx:play()
-        table.remove(enemies, i)
-        table.remove(bullets, j)
+    if timer.check("spawnEnemy", ENEMY_RATE) then
+      local x = ENEMY_SPAWNS[love.math.random(2)]
+      local y = love.math.random(HEIGHT * 1.5) - HEIGHT * 0.25
+      table.insert(enemies, {x = x, y = y, r = 0})
+    end
+
+    for i, b in ipairs(bullets) do
+      b.x, b.y = b.x + (b.dx * dt), b.y + (b.dy * dt)
+      if b.x > WIDTH + 100 or b.x < -100 or b.y > HEIGHT + 100 or b.y < -100 then
+        table.remove(bullets, i)
+      end
+    end
+
+    for i, e in ipairs(enemies) do
+      e.r = math.atan2(e.y - player.y, e.x - player.x)
+      e.x = e.x - math.cos(e.r) * ENEMY_SPEED
+      e.y = e.y - math.sin(e.r) * ENEMY_SPEED
+
+      if math.absdist(player.x, player.y, e.x, e.y) <= PLAYER_CORE + ENEMY_SIZE then
+        explosionSfx:play()
+        playing = false
+      end
+
+      for j, b in ipairs(bullets) do
+        if math.absdist(e.x, e.y, b.x, b.y) <= b.size + ENEMY_SIZE then
+          hitSfx:play()
+          table.remove(enemies, i)
+          table.remove(bullets, j)
+        end
       end
     end
   end

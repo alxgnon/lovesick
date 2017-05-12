@@ -91,7 +91,12 @@ function love.update(dt)
     timer.update(dt)
     difficulty.update(timer.peek("score"))
 
-    player.x, player.y = sticks.move(player.x, player.y, dt, PLAYER_SPEED)
+    if sticks.shoot() then
+      player.x, player.y = sticks.move(player.x, player.y, dt, PLAYER_SPEED)
+    else
+      player.x, player.y = sticks.move(player.x, player.y, dt, PLAYER_SPEED * 1.25)
+    end
+
     player.x = math.min(math.max(player.x, 0), WIDTH)
     player.y = math.min(math.max(player.y, 0), HEIGHT)
     player.r = sticks.point()

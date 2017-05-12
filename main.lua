@@ -96,7 +96,7 @@ function love.draw()
     number = score,
     x = WIDTH / 14, y = HEIGHT / 14,
     w = 6 * WIDTH / 7, h = 6 * WIDTH / 7,
-    bgColor = {8, 20, 20}, fgColor = {25, 45, 45}
+    bgColor = {8, 15, 15}, fgColor = {25, 45, 45}
   }
 
   love.graphics.setColor(255, 255, 255)

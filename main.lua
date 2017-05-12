@@ -22,7 +22,6 @@ BULLET_SPEED = 400
 BULLET_RATE = 0.1
 
 PAWN_SIZE = 10
-PAWN_RATE = 0.4
 
 function reset()
   difficulty.reset()
@@ -112,7 +111,7 @@ function love.update(dt)
       end
     end
 
-    if timer.check("spawnPawn", PAWN_RATE) then
+    if timer.check("spawnPawn", difficulty.pawnRate) then
       local x = ENEMY_SPAWNS[love.math.random(2)]
       local y = love.math.random(HEIGHT * 1.2) - HEIGHT * 0.1
       table.insert(pawns, {x = x, y = y, r = 0})

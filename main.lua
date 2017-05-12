@@ -9,6 +9,14 @@ PLAYER_SIZE = 15
 PLAYER_CORE = 4
 PLAYER_SPEED = 250
 
+PLAYER_RANKS = {
+  {0, 170, 255},
+  {0, 255, 170},
+  {255, 210, 0},
+  {180, 0, 255},
+  {255, 130, 0}
+}
+
 BULLET_SPEED = 400
 BULLET_RATE = 0.1
 
@@ -130,9 +138,11 @@ function love.draw()
     love.graphics.circle("fill", b.x, b.y, b.size)
   end
 
+  local rank = math.floor(timer.peek("score") / 100 % table.getn(PLAYER_RANKS)) + 1
+
   love.graphics.setColor(0, 0, 0)
   love.graphics.polygon("fill", math.regular(player.x, player.y, player.r, 4, PLAYER_SIZE + STROKE))
-  love.graphics.setColor(0, 170, 255)
+  love.graphics.setColor(PLAYER_RANKS[rank])
   love.graphics.polygon("fill", math.regular(player.x, player.y, player.r, 4, PLAYER_SIZE))
   love.graphics.setColor(0, 0, 0)
   love.graphics.polygon("fill", math.regular(player.x, player.y, player.r, 4, PLAYER_CORE + STROKE))

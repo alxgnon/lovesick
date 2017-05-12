@@ -1,3 +1,4 @@
+require "difficulty"
 require "lcd"
 require "moremath"
 require "sticks"
@@ -21,10 +22,11 @@ BULLET_SPEED = 400
 BULLET_RATE = 0.1
 
 ENEMY_SIZE = 10
-ENEMY_SPEED = 3
 ENEMY_RATE = 0.4
 
 function reset()
+  difficulty.reset()
+
   timer.reset("score")
   timer.reset("shoot")
   timer.reset("spawnEnemy")
@@ -69,6 +71,7 @@ end
 function love.update(dt)
   if playing then
     timer.update(dt)
+    difficulty.update(dt)
 
     player.x, player.y = sticks.move(player.x, player.y, dt, PLAYER_SPEED)
     player.x = math.min(math.max(player.x, 0), WIDTH)
@@ -91,7 +94,7 @@ function love.update(dt)
 
     if timer.check("spawnEnemy", ENEMY_RATE) then
       local x = ENEMY_SPAWNS[love.math.random(2)]
-      local y = love.math.random(HEIGHT * 1.5) - HEIGHT * 0.25
+      local y = love.math.random(HEIGHT * 1.2) - HEIGHT * 0.1
       table.insert(enemies, {x = x, y = y, r = 0})
     end
 
@@ -104,8 +107,8 @@ function love.update(dt)
 
     for i, e in ipairs(enemies) do
       e.r = math.atan2(e.y - player.y, e.x - player.x)
-      e.x = e.x - math.cos(e.r) * ENEMY_SPEED
-      e.y = e.y - math.sin(e.r) * ENEMY_SPEED
+      e.x = e.x - math.cos(e.r) * difficulty.pawnSpeed
+      e.y = e.y - math.sin(e.r) * difficulty.pawnSpeed
 
       if math.absdist(player.x, player.y, e.x, e.y) <= PLAYER_CORE + ENEMY_SIZE then
         explosionSfx:play()

@@ -62,7 +62,7 @@ function love.joystickaxis(joystick, axis, value)
 end
 
 function love.joystickpressed(joystick, button)
-  if not playing then
+  if button == 10 and not playing then
     playing = true
     reset()
   end

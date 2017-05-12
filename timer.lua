@@ -39,3 +39,7 @@ function timer.tick(name, secondSfx, tenSecondsSfx, hundredSecondsSfx)
     end
   end
 end
+
+function timer.add(name, time)
+  timers[name] = timers[name] + time
+end

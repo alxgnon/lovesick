@@ -27,7 +27,6 @@ ENEMY_RATE = 0.4
 function reset()
   difficulty.reset()
 
-  timer.reset("score")
   timer.reset("shoot")
   timer.reset("spawnEnemy")
 
@@ -53,6 +52,7 @@ function love.load()
   WIDTH, HEIGHT = love.graphics.getDimensions()
   ENEMY_SPAWNS = {-25, WIDTH + 25}
   reset()
+  timer.reset("score")
 
   love.graphics.setBackgroundColor(0, 8, 8)
 end
@@ -62,16 +62,25 @@ function love.joystickaxis(joystick, axis, value)
 end
 
 function love.joystickpressed(joystick, button)
-  if button == 10 and not playing then
-    playing = true
-    reset()
+  if not playing then
+    if (button == 9 or button == 10) and not selectScore then
+      reset()
+      timer.reset("score")
+    end
+
+    if button == 9 then
+      timer.add("score", 10)
+      selectScore = true
+    elseif button == 10 then
+      playing = true
+    end
   end
 end
 
 function love.update(dt)
   if playing then
     timer.update(dt)
-    difficulty.update(dt)
+    difficulty.update(timer.peek("score"))
 
     player.x, player.y = sticks.move(player.x, player.y, dt, PLAYER_SPEED)
     player.x = math.min(math.max(player.x, 0), WIDTH)
@@ -113,6 +122,7 @@ function love.update(dt)
       if math.absdist(player.x, player.y, e.x, e.y) <= PLAYER_CORE + ENEMY_SIZE then
         explosionSfx:play()
         playing = false
+        selectScore = false
       end
 
       for j, b in ipairs(bullets) do

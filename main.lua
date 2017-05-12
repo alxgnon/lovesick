@@ -82,6 +82,12 @@ function love.joystickpressed(joystick, button)
   end
 end
 
+function love.focus(f)
+  if not f then
+    playing = false
+  end
+end
+
 function love.update(dt)
   if playing then
     timer.update(dt)

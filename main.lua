@@ -106,14 +106,14 @@ function love.update(dt)
       local power = sticks.power()
 
       if timer.check("shoot", BULLET_RATE + power * 0.15) then
-        shootSfx:setVolume(0.02 + power * 0.04)
+        shootSfx:setVolume(0.02 + power * 0.03)
         shootSfx:setPitch(1 - power * 0.1)
         shootSfx:play()
 
         table.insert(bullets, {
           power = power,
-          x = player.x,
-          y = player.y,
+          x = player.x + math.cos(aim) * (PLAYER_SIZE + power * 10),
+          y = player.y + math.sin(aim) * (PLAYER_SIZE + power * 10),
           dx = math.cos(aim) * BULLET_SPEED,
           dy = math.sin(aim) * BULLET_SPEED,
           size = 4 + power * 10

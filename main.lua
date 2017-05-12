@@ -17,10 +17,10 @@ ENEMY_SPEED = 3
 ENEMY_RATE = 0.4
 
 function reset()
+  timer.reset("score")
   timer.reset("shoot")
   timer.reset("spawnEnemy")
 
-  score = 0
   player = {x = WIDTH / 2, y = HEIGHT / 2, r = 0}
   bullets = {}
   enemies = {}
@@ -79,13 +79,12 @@ function love.update(dt)
 
     if math.absdist(player.x, player.y, e.x, e.y) <= PLAYER_CORE + ENEMY_SIZE then
       table.remove(enemies, i)
-      score = 0
+      timer.reset("score")
     end
 
     for j, b in ipairs(bullets) do
       if math.absdist(e.x, e.y, b.x, b.y) <= b.size + ENEMY_SIZE then
         table.remove(enemies, i)
-        score = score + 1
       end
     end
   end
@@ -93,7 +92,7 @@ end
 
 function love.draw()
   lcd.draw{
-    number = score,
+    number = timer.peek("score"),
     x = WIDTH / 14, y = HEIGHT / 14,
     w = 6 * WIDTH / 7, h = 6 * WIDTH / 7,
     bgColor = {8, 15, 15}, fgColor = {25, 45, 45}

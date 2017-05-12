@@ -19,3 +19,7 @@ function timer.check(name, time)
   timer.reset(name)
   return true
 end
+
+function timer.peek(name)
+  return timers[name]
+end

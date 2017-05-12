@@ -1,6 +1,7 @@
+require "lcd"
 require "moremath"
-require "timer"
 require "sticks"
+require "timer"
 
 PLAYER_SPEED = 250
 
@@ -25,6 +26,8 @@ function love.load()
   WIDTH, HEIGHT = love.graphics.getDimensions()
   ENEMY_SPAWNS = {-25, WIDTH + 25}
   reset()
+
+  love.graphics.setBackgroundColor({0, 8, 8})
 end
 
 function love.joystickaxis(joystick, axis, value)
@@ -83,6 +86,13 @@ function love.update(dt)
 end
 
 function love.draw()
+  lcd.draw{
+    number = score,
+    x = WIDTH / 14, y = HEIGHT / 14,
+    w = 6 * WIDTH / 7, h = 6 * WIDTH / 7,
+    bgColor = {8, 20, 20}, fgColor = {25, 45, 45}
+  }
+
   love.graphics.setColor(255, 255, 255)
   for i, b in ipairs(bullets) do
     love.graphics.circle("fill", b.x, b.y, b.size)

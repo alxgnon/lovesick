@@ -71,7 +71,7 @@ function love.joystickpressed(joystick, button)
     end
 
     if button == 9 then
-      timer.add("score", 10)
+      timer.add("score", 60)
       selectScore = true
     elseif button == 10 then
       playing = true

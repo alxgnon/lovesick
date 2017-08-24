@@ -4,9 +4,9 @@ sticks = {}
 
 local MOVE_X = 1
 local MOVE_Y = 2
-local SHOOT_X = 3
-local SHOOT_Y = 6
-local POWER = 5
+local SHOOT_X = 4
+local SHOOT_Y = 5
+local POWER = 6
 
 local axes = {0, 0, 0, 0, 0, 0}
 

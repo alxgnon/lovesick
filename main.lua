@@ -59,21 +59,24 @@ function love.joystickaxis(joystick, axis, value)
   sticks.update(joystick, axis, value)
 end
 
+SELECT = 7
+START = 8
+
 function love.joystickpressed(joystick, button)
   if alive then
-    if button == 10 then
+    if button == START then
       playing = not playing
     end
   else
-    if (button == 9 or button == 10) and not selectScore then
+    if (button == SELECT or button == START) and not selectScore then
       reset()
       timer.reset("score")
     end
 
-    if button == 9 then
+    if button == SELECT then
       timer.add("score", 60)
       selectScore = true
-    elseif button == 10 then
+    elseif button == START then
       playing = true
       alive = true
     end

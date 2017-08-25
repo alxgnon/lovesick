@@ -14,12 +14,12 @@ function sticks.update(joystick, axis, value)
   axes[axis] = value
 end
 
-function sticks.point()
+function sticks.direction()
   local sx, sy = axes[MOVE_X], axes[MOVE_Y]
   return math.atan2(sy, sx)
 end
 
-function sticks.move(x, y, dt, speed)
+function sticks.movement(x, y, dt, speed)
   local sx, sy = axes[MOVE_X], axes[MOVE_Y]
   return x + sx * dt * speed, y + sy * dt * speed
 end
@@ -29,11 +29,11 @@ function sticks.aim()
   return math.atan2(sy, sx)
 end
 
-function sticks.shoot()
+function sticks.is_shooting()
   local sx, sy = axes[SHOOT_X], axes[SHOOT_Y]
   return math.absdist(0, 0, sx, sy) > 0.2
 end
 
-function sticks.power()
+function sticks.power_level()
   return axes[POWER] + 1
 end

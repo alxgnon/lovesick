@@ -94,19 +94,20 @@ function love.update(dt)
     timer.update(dt)
     difficulty.update(timer.peek("score"))
 
-    if sticks.shoot() then
-      player.x, player.y = sticks.move(player.x, player.y, dt, PLAYER_SPEED)
+      if sticks.is_shooting() then
+        player.x, player.y = sticks.movement(player.x, player.y, dt, PLAYER_SPEED)
     else
-      player.x, player.y = sticks.move(player.x, player.y, dt, PLAYER_SPEED * 1.25)
+        player.x, player.y = sticks.movement(player.x, player.y, dt, PLAYER_SPEED * 1.25)
+      end
     end
 
     player.x = math.min(math.max(player.x, 0), WIDTH)
     player.y = math.min(math.max(player.y, 0), HEIGHT)
-    player.r = sticks.point()
+    player.r = sticks.direction()
 
-    if sticks.shoot() then
+    if sticks.is_shooting() then
       local aim = sticks.aim()
-      local power = sticks.power()
+      local power = sticks.power_level()
 
       if timer.check("shoot", BULLET_RATE + power * 0.15) then
         shootSfx:setVolume(0.02 + power * 0.03)

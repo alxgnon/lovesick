@@ -94,9 +94,10 @@ function love.update(dt)
     timer.update(dt)
     difficulty.update(timer.peek("score"))
 
+    if sticks.is_moving() then
       if sticks.is_shooting() then
         player.x, player.y = sticks.movement(player.x, player.y, dt, PLAYER_SPEED)
-    else
+      else
         player.x, player.y = sticks.movement(player.x, player.y, dt, PLAYER_SPEED * 1.25)
       end
     end

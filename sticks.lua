@@ -19,6 +19,11 @@ function sticks.direction()
   return math.atan2(sy, sx)
 end
 
+function sticks.is_moving()
+  local sx, sy = axes[MOVE_X], axes[MOVE_Y]
+  return math.absdist(0, 0, sx, sy) > 0.2
+end
+
 function sticks.movement(x, y, dt, speed)
   local sx, sy = axes[MOVE_X], axes[MOVE_Y]
   return x + sx * dt * speed, y + sy * dt * speed

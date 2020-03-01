@@ -11,11 +11,11 @@ PLAYER_CORE = 4
 PLAYER_SPEED = 250
 
 PLAYER_RANKS = {
-  {0, 170, 255},
-  {0, 255, 170},
-  {255, 210, 0},
-  {240, 0, 255},
-  {255, 130, 0}
+  {0, 0.67, 1},
+  {0, 1, 0.67},
+  {1, 0.83, 0},
+  {0.94, 0, 1},
+  {1, 0.51, 0}
 }
 
 BULLET_SPEED = 400
@@ -52,7 +52,7 @@ function love.load()
   reset()
   timer.reset("score")
 
-  love.graphics.setBackgroundColor(0, 8, 8)
+  love.graphics.setBackgroundColor(0, 0.03, 0.03)
 end
 
 function love.joystickaxis(joystick, axis, value)
@@ -175,10 +175,10 @@ function love.draw()
     number = timer.peek("score"),
     x = WIDTH / 14, y = HEIGHT / 14,
     w = 6 * WIDTH / 7, h = 6 * WIDTH / 7,
-    bgColor = {8, 15, 15}, fgColor = {25, 45, 45}
+    bgColor = {0.03, 0.06, 0.06}, fgColor = {0.1, 0.18, 0.18}
   }
 
-  love.graphics.setColor(255, 255, 255)
+  love.graphics.setColor(1, 1, 1)
   for i, b in ipairs(bullets) do
     love.graphics.circle("fill", b.x, b.y, b.size)
   end
@@ -191,13 +191,13 @@ function love.draw()
   love.graphics.polygon("fill", math.regular(player.x, player.y, player.r, 4, PLAYER_SIZE))
   love.graphics.setColor(0, 0, 0)
   love.graphics.polygon("fill", math.regular(player.x, player.y, player.r, 4, PLAYER_CORE + STROKE))
-  love.graphics.setColor(255, 255, 255)
+  love.graphics.setColor(1, 1, 1)
   love.graphics.polygon("fill", math.regular(player.x, player.y, player.r, 4, PLAYER_CORE))
 
   for i, e in ipairs(pawns) do
     love.graphics.setColor(0, 0, 0)
     love.graphics.polygon("fill", math.regular(e.x, e.y, e.r + math.pi/3, 3, PAWN_SIZE + STROKE))
-    love.graphics.setColor(255, 130, 0)
+    love.graphics.setColor(1, 0.51, 0)
     love.graphics.polygon("fill", math.regular(e.x, e.y, e.r + math.pi/3, 3, PAWN_SIZE))
   end
 end

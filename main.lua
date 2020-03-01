@@ -59,8 +59,8 @@ function love.joystickaxis(joystick, axis, value)
   sticks.update(joystick, axis, value)
 end
 
-SELECT = 7
-START = 8
+SELECT = 9
+START = 10
 
 function love.joystickpressed(joystick, button)
   if alive then

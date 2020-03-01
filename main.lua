@@ -40,6 +40,7 @@ function love.load()
   hitSfx = love.audio.newSource("assets/hit.wav", "static")
   hitSfx:setVolume(0.1)
   shootSfx = love.audio.newSource("assets/shoot.wav", "static")
+  shootSfx:setVolume(0.02)
   secondSfx = love.audio.newSource("assets/second.wav", "static")
   secondSfx:setVolume(0.05)
   tenSecondSfx = love.audio.newSource("assets/tenSecond.wav", "static")
@@ -108,20 +109,16 @@ function love.update(dt)
 
     if sticks.is_shooting() then
       local aim = sticks.aim()
-      local power = sticks.power_level()
 
-      if timer.check("shoot", BULLET_RATE + power * 0.15) then
-        shootSfx:setVolume(0.02 + power * 0.03)
-        shootSfx:setPitch(1 - power * 0.1)
+      if timer.check("shoot", BULLET_RATE) then
         shootSfx:play()
 
         table.insert(bullets, {
-          power = power,
-          x = player.x + math.cos(aim) * (PLAYER_SIZE + power * 10),
-          y = player.y + math.sin(aim) * (PLAYER_SIZE + power * 10),
+          x = player.x + math.cos(aim) * PLAYER_SIZE,
+          y = player.y + math.sin(aim) * PLAYER_SIZE,
           dx = math.cos(aim) * BULLET_SPEED,
           dy = math.sin(aim) * BULLET_SPEED,
-          size = 4 + power * 10
+          size = 4
         })
       end
     end
@@ -155,13 +152,7 @@ function love.update(dt)
         if math.absdist(e.x, e.y, b.x, b.y) <= b.size + PAWN_SIZE then
           hitSfx:play()
           table.remove(pawns, i)
-
-          if b.power > 0.25 then
-            b.power = b.power - 0.5
-            b.size = 4 + b.power * 10
-          else
-            table.remove(bullets, j)
-          end
+          table.remove(bullets, j)
         end
       end
     end
